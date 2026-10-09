@@ -1,25 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:wajiha_game_core/wajiha_game_core.dart';
-import 'game_screen.dart';
+import 'package:flutter/services.dart';
+import 'screens/splash_screen.dart';
+import 'services/audio_service.dart';
+import 'services/settings_service.dart';
+import 'theme/craftsman.dart';
+import 'theme/tower_themes.dart';
 
-void main() => runApp(const TowerStackApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  final settings = TowerSettings();
+  await settings.load();
+  final audio = TowerAudio();
+  audio.configure(
+    musicOn: settings.musicOn,
+    sfxOn: settings.sfxOn,
+    volume: settings.volume,
+  );
+  runApp(TowerStackApp(settings: settings, audio: audio));
+}
 
-class TowerStackApp extends StatelessWidget {
-  const TowerStackApp({super.key});
+class TowerStackApp extends StatefulWidget {
+  final TowerSettings settings;
+  final TowerAudio audio;
+  const TowerStackApp({super.key, required this.settings, required this.audio});
+
+  @override
+  State<TowerStackApp> createState() => _TowerStackAppState();
+}
+
+class _TowerStackAppState extends State<TowerStackApp>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    widget.audio.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Pause (not stop) on interruption so music resumes exactly where it
+    // left off; the game screen additionally freezes its engine.
+    if (state == AppLifecycleState.paused) {
+      widget.audio.onAppPaused();
+    } else if (state == AppLifecycleState.resumed) {
+      widget.audio.onAppResumed();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GameShell(
-      variant: ShellVariant.elegantSerif,
-      title: 'Tower Stack',
-      tagline: 'Stack moving blocks into the tallest tower',
-      emoji: '🗼',
-      slug: 'towerstack',
-      howToPlay:
-          '• The crane block swings side to side — tap to drop it.\n• Overhang gets sliced off! Miss the tower completely and it\'s over.\n• Perfect drops snap on and build your combo.\n• How tall can you stack?',
-      playerOptions: const [1],
-      supportsBots: false,
-      gameBuilder: (ctx, players, cb) => TowerStackScreen(players: players, callbacks: cb),
+    return ListenableBuilder(
+      listenable: widget.settings,
+      builder: (_, _) => MaterialApp(
+        title: 'Tower Stack',
+        debugShowCheckedModeBanner: false,
+        theme: Craft.theme(TowerThemes.byId(widget.settings.themeId,
+            custom: widget.settings.customTheme)),
+        home: SplashScreen(audio: widget.audio, settings: widget.settings),
+      ),
     );
   }
 }

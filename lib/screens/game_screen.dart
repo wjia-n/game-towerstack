@@ -196,7 +196,7 @@ class _GameScreenState extends State<GameScreen>
                     builder: (_, _) => CustomPaint(
                       size: Size.infinite,
                       painter: _TowerPainter(
-                        engine: _e,
+                        e: _e,
                         theme: t,
                         blockStyle: widget.settings.blockStyle,
                         camOffset: camOffset,
@@ -568,18 +568,18 @@ class _TowerPainter extends CustomPainter {
     canvas.save();
     canvas.clipRRect(r);
     canvas.drawRRect(r, Paint()..color = base);
-    _texture(canvas, Rect.fromLTRBR(x, y0, x + w, y0 + hgt), hue, base);
+    _texture(canvas, Rect.fromLTRB(x, y0, x + w, y0 + hgt), hue, base);
     // Top bevel (light) + bottom shadow: pseudo-3D weight.
     canvas.drawRect(
-        Rect.fromLTRBR(x, y0, x + w, y0 + 6),
+        Rect.fromLTRB(x, y0, x + w, y0 + 6),
         Paint()..color = Colors.white.withValues(alpha: 0.28));
     canvas.drawRect(
-        Rect.fromLTRBR(x, y0 + hgt - 7, x + w, y0 + hgt),
+        Rect.fromLTRB(x, y0 + hgt - 7, x + w, y0 + hgt),
         Paint()..color = Colors.black.withValues(alpha: 0.25));
     // Left/right edge shading.
-    canvas.drawRect(Rect.fromLTRBR(x, y0, x + 4, y0 + hgt),
+    canvas.drawRect(Rect.fromLTRB(x, y0, x + 4, y0 + hgt),
         Paint()..color = Colors.black.withValues(alpha: 0.12));
-    canvas.drawRect(Rect.fromLTRBR(x + w - 4, y0, x + w, y0 + hgt),
+    canvas.drawRect(Rect.fromLTRB(x + w - 4, y0, x + w, y0 + hgt),
         Paint()..color = Colors.black.withValues(alpha: 0.12));
     canvas.restore();
     canvas.drawRRect(
@@ -753,7 +753,7 @@ class _TowerPainter extends CustomPainter {
       final isTop = i == tower.length - 1;
       final sy = isTop && e.phase == TowerPhase.dropping
           ? 1 - 0.16 * sin(pi * squash.clamp(0.0, 1.0))
-          : 1;
+          : 1.0;
       _drawBlock(canvas, b.x * size.width, b.w * size.width, worldY(i), b.hue,
           squashY: sy);
     }

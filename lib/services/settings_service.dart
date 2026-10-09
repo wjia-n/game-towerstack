@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/tower_themes.dart';
 
 /// Persisted settings + profile for Tower Stack. Survives app restarts.

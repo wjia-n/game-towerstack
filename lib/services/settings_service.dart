@@ -59,7 +59,7 @@ class TowerSettings extends ChangeNotifier {
   int playerCount = 2;
   List<int> botSeats = [1];
   List<String> playerNames = List.of(defaultNames);
-  bool isPro = false;
+  bool isPro = true; // everything unlocked — no Pro version
 
   // Profile (renameable, one JSON blob).
   String playerName = 'Builder';
@@ -131,7 +131,7 @@ class TowerSettings extends ChangeNotifier {
     botSeats = [
       for (int i = 1; i <= bots && i < playerCount; i++) i,
     ];
-    isPro = p.getBool(_kIsPro) ?? false;
+    isPro = true; // everything unlocked
     playerNames = decodePlayerNames(p.getString(_kNamesJson));
 
     // Profile: order-safe JSON. Migrate the legacy single int best once.

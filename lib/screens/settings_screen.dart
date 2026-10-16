@@ -3,6 +3,7 @@ import '../services/audio_service.dart';
 import '../services/settings_service.dart';
 import '../theme/craftsman.dart';
 import '../theme/tower_themes.dart';
+import '../transfer/transfer_ui.dart';
 
 /// Settings: builder name, music/SFX toggles, volume.
 class SettingsScreen extends StatefulWidget {
@@ -70,6 +71,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
               child: Column(
                 children: [
+              TransferSaveTile(gameSlug: 'towerstack'),
                   SettingRow(
                     label: 'Builder name',
                     theme: t,

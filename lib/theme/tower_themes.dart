@@ -348,6 +348,14 @@ class Difficulties {
     'PRO: blistering speed',
   ];
 
+  // iOS variant: same descriptions without the PRO tag (Android keeps the original).
+  static const descriptionsIos = [
+    'Slow crane, forgiving',
+    'The standard climb',
+    'Fast crane, tight timing',
+    'Blistering speed',
+  ];
+
   /// 3 = Master is a PRO feature.
   static bool isPro(int index) => index >= 3;
 

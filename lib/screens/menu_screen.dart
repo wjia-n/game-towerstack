@@ -222,8 +222,10 @@ class _MenuScreenState extends State<MenuScreen> {
                   const SizedBox(height: 14),
                   _ProfileCard(theme: t),
                   const SizedBox(height: 14),
-                  _SupportCard(theme: t, store: _store),
-                  const SizedBox(height: 14),
+                  if (defaultTargetPlatform != TargetPlatform.iOS) ...[
+                    _SupportCard(theme: t, store: _store),
+                    const SizedBox(height: 14),
+                  ],
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -472,7 +474,9 @@ class _DifficultyCard extends StatelessWidget {
                   theme: theme,
                   label:
                       '${Difficulties.isPro(d) && !s.isPro ? '🔒 ' : ''}${Difficulties.names[d]}',
-                  sub: Difficulties.descriptions[d],
+                  sub: (defaultTargetPlatform == TargetPlatform.iOS
+                      ? Difficulties.descriptionsIos
+                      : Difficulties.descriptions)[d],
                   selected: s.difficulty == d,
                   onTap: () {
                     audio.click();
@@ -689,7 +693,9 @@ class _StyleCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                '🔒 ${TowerThemes.all.length - TowerThemes.freeThemeIds.length} more skies in PRO',
+                defaultTargetPlatform == TargetPlatform.iOS
+                    ? '🔒 ${TowerThemes.all.length - TowerThemes.freeThemeIds.length} more skies'
+                    : '🔒 ${TowerThemes.all.length - TowerThemes.freeThemeIds.length} more skies in PRO',
                 style: Craft.label(12, theme: theme),
               ),
             ),
